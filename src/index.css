@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light Theme (Beige/Cream base, dark text) */
+  --lofi-bg: 247 245 240;
+  /* #f7f5f0 */
+  --lofi-surface: 255 255 255;
+  /* #ffffff */
+  --lofi-primary: 20 20 20;
+  /* near black */
+  --lofi-text: 40 40 40;
+  /* dark gray */
+  --lofi-muted: 140 140 145;
+  /* gray */
+  --lofi-accent1: 224 122 95;
+  /* warm rusty orange */
+  --lofi-accent2: 141 159 135;
+  /* soft olive/sage */
+  --lofi-accent3: 168 113 144;
+  /* soft mauve */
+}
+
+.dark {
+  /* Dark Theme (Pure OLED Black) */
+  --lofi-bg: 0 0 0;
+  --lofi-surface: 5 5 5;
+  --lofi-primary: 255 255 255;
+  --lofi-text: 244 244 245;
+  --lofi-muted: 161 161 170;
+  --lofi-accent1: 242 132 130;
+  /* coral */
+  --lofi-accent2: 132 165 157;
+  /* mint */
+  --lofi-accent3: 181 101 118;
+  /* rose */
+}
+
+@layer base {
+  body {
+    @apply bg-lofi-bg text-lofi-text overflow-x-hidden selection:bg-lofi-accent2/30 selection:text-white font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+}
+
+/* Custom aesthetic scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-lofi-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-lofi-surface rounded-full border-2 border-lofi-bg;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-lofi-muted;
+}
