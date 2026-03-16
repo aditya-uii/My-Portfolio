@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Github, Twitter, Linkedin } from 'lucide-react';
+import { Github, Instagram } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import ThemeToggle from './ThemeToggle';
@@ -13,7 +13,7 @@ const Navbar = () => {
             opacity: 0,
             duration: 1.5,
             ease: 'power4.out',
-            delay: 3.2 // Syncs perfectly after preloader
+            delay: 3.2 
         });
     });
 
@@ -32,11 +32,11 @@ const Navbar = () => {
 
                 <div className="flex items-center space-x-4 text-lofi-muted">
                     <ThemeToggle />
-                    <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-lofi-primary transition-colors">
+                    <a href="https://github.com/aditya-uii" target="_blank" rel="noreferrer" className="hover:text-lofi-primary transition-colors">
                         <Github size={18} />
                     </a>
-                    <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-lofi-primary transition-colors">
-                        <Twitter size={18} />
+                    <a href="https://www.instagram.com/adityakashyap7998/" target="_blank" rel="noreferrer" className="hover:text-lofi-primary transition-colors">
+                        <Instagram size={18} />
                     </a>
                 </div>
             </div>

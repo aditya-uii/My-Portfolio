@@ -48,6 +48,82 @@ const About = () => {
             ease: 'sine.inOut'
         });
 
+        // Setup mouse interaction for the vibe graphic
+        const card = document.querySelector('.about-image-container');
+        const orb = document.querySelector('.central-orb');
+        const satellites = document.querySelectorAll('.satellite');
+        
+        const handleMouseMove = (e) => {
+            const { clientX, clientY } = e;
+            const { left, top, width, height } = card.getBoundingClientRect();
+            
+            // Normalize cursor position
+            const x = (clientX - left) / width - 0.5;
+            const y = (clientY - top) / height - 0.5;
+            
+            // 3D Tilt container
+            gsap.to('.about-image-container', {
+                rotationY: x * 15,
+                rotationX: -y * 15,
+                duration: 0.6,
+                ease: 'power2.out',
+                transformPerspective: 1000
+            });
+            
+            // Move central orb
+            gsap.to(orb, {
+                x: x * 40,
+                y: y * 40,
+                duration: 1,
+                ease: 'power3.out'
+            });
+            
+            // Move satellites with different parallax factors
+            satellites.forEach((sat, i) => {
+                const factor = (i + 1) * 30;
+                gsap.to(sat, {
+                    x: x * factor,
+                    y: y * factor,
+                    duration: 1.2 + i * 0.2,
+                    ease: 'power3.out'
+                });
+            });
+
+            // Update Glow
+            gsap.to('.cursor-glow', {
+                x: clientX - left - 100,
+                y: clientY - top - 100,
+                opacity: 0.6,
+                duration: 0.4
+            });
+        };
+
+        const handleMouseLeave = () => {
+            gsap.to('.about-image-container', {
+                rotationY: 0,
+                rotationX: 0,
+                duration: 1,
+                ease: 'elastic.out(1, 0.5)'
+            });
+            gsap.to([orb, ...satellites], {
+                x: 0,
+                y: 0,
+                duration: 1,
+                ease: 'power2.out'
+            });
+            gsap.to('.cursor-glow', {
+                opacity: 0,
+                duration: 0.5
+            });
+        };
+
+        card.addEventListener('mousemove', handleMouseMove);
+        card.addEventListener('mouseleave', handleMouseLeave);
+
+        return () => {
+            card.removeEventListener('mousemove', handleMouseMove);
+            card.removeEventListener('mouseleave', handleMouseLeave);
+        };
     }, { scope: containerRef });
 
     return (
@@ -56,16 +132,52 @@ const About = () => {
 
                 {/* Left column: Image / Vibe graphic */}
                 <div className="w-full lg:w-1/2 relative group perspective">
-                    <div className="about-image relative z-10 w-full aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden dark:bg-lofi-surface/40 bg-lofi-surface/60 border dark:border-lofi-primary/5 border-lofi-primary/15 backdrop-blur-sm flex items-center justify-center">
-                        {/* Instead of a photo, a beautiful abstract lo-fi element */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-lofi-accent3/20 via-lofi-accent1/10 to-transparent"></div>
+                    <div className="about-image about-image-container relative z-10 w-full aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden dark:bg-lofi-surface/40 bg-lofi-surface/60 border dark:border-lofi-primary/5 border-lofi-primary/15 backdrop-blur-sm shadow-2xl transition-all duration-500">
+                        {/* Interactive Background Elements */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-lofi-accent3/10 via-lofi-accent1/5 to-transparent"></div>
+                        
+                        {/* Dynamic Glow that follows cursor */}
+                        <div className="cursor-glow absolute w-[200px] h-[200px] bg-lofi-accent2/30 blur-[80px] rounded-full opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-lofi-accent1/30 blur-[60px] rounded-full dark:mix-blend-screen mix-blend-multiply mix-blend-mode"></div>
-                        <div className="absolute bottom-10 left-10 w-32 h-32 bg-lofi-accent2/20 blur-[50px] rounded-full dark:mix-blend-screen mix-blend-multiply mix-blend-mode"></div>
+                        {/* Central Morphing Orb */}
+                        <div className="central-orb absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-lofi-accent1/40 to-lofi-accent2/20 blur-[40px] mix-blend-screen animate-pulse-slow"></div>
 
-                        <div className="font-mono text-lofi-text/40 text-sm italic z-10 flex flex-col items-center">
-                            <Music size={32} className="mb-4 text-lofi-accent2/50" />
-                            <p>lofi beats playing softly</p>
+                        {/* Interactive Floating Satellites (Icons/Shapes) */}
+                        <div className="relative w-full h-full flex items-center justify-center p-8 pointer-events-none overflow-hidden">
+                            
+                            {/* Layered Content */}
+                            <div className="satellite absolute top-[15%] left-[20%] w-16 h-16 bg-white/10 dark:bg-black/20 backdrop-blur-md rounded-2xl border border-white/20 flex items-center justify-center rotate-12">
+                                <Code className="text-lofi-accent1" size={24} />
+                            </div>
+
+                            <div className="satellite absolute bottom-[20%] right-[15%] w-20 h-20 bg-white/5 dark:bg-black/10 backdrop-blur-xl rounded-full border border-white/10 flex items-center justify-center -rotate-6">
+                                <Coffee className="text-lofi-accent2" size={28} />
+                            </div>
+
+                            <div className="satellite absolute top-[25%] right-[20%] w-14 h-14 bg-white/10 dark:bg-black/20 backdrop-blur-lg rounded-xl border border-white/20 flex items-center justify-center -rotate-12">
+                                <Music className="text-lofi-accent3" size={22} />
+                            </div>
+
+                            <div className="satellite absolute bottom-[15%] left-[15%] w-12 h-12 bg-white/5 dark:bg-black/10 backdrop-blur-md rounded-lg border border-white/10 flex items-center justify-center rotate-6">
+                                <div className="w-4 h-4 rounded-full bg-lofi-accent1/60 blur-sm"></div>
+                            </div>
+
+                            {/* Center visual focus */}
+                            <div className="z-10 text-center scale-90 md:scale-100">
+                                <div className="font-display text-4xl md:text-6xl font-black bg-clip-text text-transparent bg-gradient-to-br from-lofi-primary to-lofi-primary/40 select-none">
+                                    VIBE
+                                </div>
+                                <div className="font-mono text-[10px] tracking-[0.4em] uppercase text-lofi-muted mt-2">
+                                    Digital Identity
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Interaction Prompt Overlay */}
+                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 opacity-60 group-hover:opacity-0 transition-opacity duration-300">
+                            <p className="font-mono text-[10px] tracking-widest uppercase text-lofi-text/40">
+                                [ drag or move to feel ]
+                            </p>
                         </div>
                     </div>
 

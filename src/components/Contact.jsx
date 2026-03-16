@@ -1,10 +1,41 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import emailjs from '@emailjs/browser';
+import { X } from 'lucide-react';
 
 const Contact = () => {
     const containerRef = useRef(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState(null);
+    const formRef = useRef(null);
+
+    const sendEmail = (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setSubmitStatus(null);
+        
+        emailjs.sendForm(
+            import.meta.env.VITE_EMAILJS_SERVICE_ID,
+            import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+            formRef.current,
+            import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        ).then(() => {
+            setIsSubmitting(false);
+            setSubmitStatus('success');
+            setTimeout(() => {
+                setIsModalOpen(false);
+                setSubmitStatus(null);
+                formRef.current?.reset();
+            }, 3000);
+        }).catch((error) => {
+            console.error(error);
+            setIsSubmitting(false);
+            setSubmitStatus('error');
+        });
+    };
 
     useGSAP(() => {
         const tl = gsap.timeline({
@@ -58,18 +89,18 @@ const Contact = () => {
                     </p>
 
                     <div className="contact-content flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <a
-                            href="mailto:hello@example.com"
+                        <button
+                            onClick={() => setIsModalOpen(true)}
                             className="px-8 py-4 bg-lofi-primary text-lofi-bg font-mono text-sm font-medium rounded-full hover:bg-lofi-text transition-all duration-300 w-full sm:w-auto"
                         >
                             say hello -&gt;
-                        </a>
-                        <a
+                        </button>
+                        {/* <a
                             href="#"
                             className="px-8 py-4 bg-transparent border border-lofi-primary/10 text-lofi-primary font-mono text-sm font-medium rounded-full hover:bg-lofi-primary/5 transition-all duration-300 w-full sm:w-auto"
                         >
-                            resume
-                        </a>
+                            resume 
+                                                   </a> */}
                     </div>
                 </div>
 
@@ -78,10 +109,10 @@ const Contact = () => {
 
                     <div className="col-span-1 md:col-span-2">
                         <a href="#" className="font-display font-medium text-2xl text-lofi-primary hover:text-lofi-accent2 transition-colors inline-block mb-4">
-                            jd.
+                            Adi.
                         </a>
                         <p className="font-sans text-lofi-muted text-sm max-w-xs leading-relaxed">
-                            Building digital experiences that prioritize aesthetics, smooth interactions, and ultimate comfort.
+                            Building digital experiences that prioritize realism, smooth interactions, and ultimate comfort.
                         </p>
                     </div>
 
@@ -94,20 +125,61 @@ const Contact = () => {
 
                     <div className="flex flex-col space-y-4">
                         <h4 className="font-mono text-xs text-lofi-primary uppercase tracking-wider mb-2">Socials</h4>
-                        <a href="#" className="font-sans text-sm text-lofi-muted hover:text-lofi-accent2 transition-colors w-fit">GitHub</a>
-                        <a href="#" className="font-sans text-sm text-lofi-muted hover:text-lofi-accent2 transition-colors w-fit">Twitter / X</a>
-                        <a href="#" className="font-sans text-sm text-lofi-muted hover:text-lofi-accent2 transition-colors w-fit">LinkedIn</a>
+                        <a href="https://github.com/aditya-uii" className="font-sans text-sm text-lofi-muted hover:text-lofi-accent2 transition-colors w-fit">GitHub</a>
+                        <a href="https://www.instagram.com/adityakashyap7998/" className="font-sans text-sm text-lofi-muted hover:text-lofi-accent2 transition-colors w-fit">Instagram</a>
+                        <a href="https://leetcode.com/u/Adi7998/" className="font-sans text-sm text-lofi-muted hover:text-lofi-accent2 transition-colors w-fit">LinkedIn</a>
                     </div>
 
                 </div>
 
                 {/* Bottom Bar */}
                 <div className="contact-content w-full mt-24 flex flex-col md:flex-row justify-between items-center text-xs font-mono text-lofi-muted/60">
-                    <p>© {new Date().getFullYear()} John Doe. Designed with <span className="text-lofi-accent3">♥</span></p>
-                    <p className="mt-4 md:mt-0">Based in Kyoto, JP (simulated)</p>
+                    <p>© {new Date().getFullYear()} Aditya Kashyap. Designed with <span className="text-lofi-accent3">♥</span></p>
+                    <p className="mt-4 md:mt-0">Remote India</p>
                 </div>
 
             </div>
+
+            {/* Modal Overlay */}
+            {isModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm shadow-2xl">
+                    <div className="bg-lofi-surface border border-lofi-primary/10 rounded-3xl p-8 w-full max-w-md relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-4">
+                            <button onClick={() => setIsModalOpen(false)} className="text-lofi-muted hover:text-lofi-primary transition-colors">
+                                <X size={24} strokeWidth={1.5} />
+                            </button>
+                        </div>
+                        
+                        <h3 className="font-display text-2xl text-lofi-primary mb-2">drop a line.</h3>
+                        <p className="font-sans text-sm text-lofi-muted mb-8">Fill out the form and I'll get back to you soon.</p>
+
+                        <form ref={formRef} onSubmit={sendEmail} className="flex flex-col gap-5 text-left">
+                            <div className="flex flex-col gap-1.5">
+                                <label className="font-mono text-xs text-lofi-primary uppercase tracking-wider">Name</label>
+                                <input required type="text" name="user_name" className="w-full bg-transparent border border-lofi-primary/20 rounded-xl px-4 py-3 text-sm text-lofi-text placeholder:text-lofi-muted/50 focus:outline-none focus:border-lofi-primary/50 transition-colors" placeholder="John Doe" />
+                            </div>
+                            
+                            <div className="flex flex-col gap-1.5">
+                                <label className="font-mono text-xs text-lofi-primary uppercase tracking-wider">Email</label>
+                                <input required type="email" name="user_email" className="w-full bg-transparent border border-lofi-primary/20 rounded-xl px-4 py-3 text-sm text-lofi-text placeholder:text-lofi-muted/50 focus:outline-none focus:border-lofi-primary/50 transition-colors" placeholder="john@example.com" />
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                                <label className="font-mono text-xs text-lofi-primary uppercase tracking-wider">Message</label>
+                                <textarea required name="message" rows={4} className="w-full bg-transparent border border-lofi-primary/20 rounded-xl px-4 py-3 text-sm text-lofi-text placeholder:text-lofi-muted/50 focus:outline-none focus:border-lofi-primary/50 transition-colors resize-none" placeholder="What's on your mind?"></textarea>
+                            </div>
+
+                            <button 
+                                type="submit" 
+                                disabled={isSubmitting}
+                                className="mt-2 w-full px-8 py-4 bg-lofi-primary text-lofi-bg font-mono text-sm font-medium rounded-xl hover:bg-lofi-text transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                            >
+                                {isSubmitting ? 'sending...' : submitStatus === 'success' ? 'sent!' : submitStatus === 'error' ? 'error!' : 'send message ->'}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </footer>
     );
 };
