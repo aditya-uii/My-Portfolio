@@ -21,7 +21,7 @@ const Navbar = () => {
         <nav ref={navRef} className="fixed top-6 left-1/2 -translate-x-1/2 w-full max-w-3xl z-50 px-6">
             <div className="bg-lofi-surface/40 backdrop-blur-md border border-lofi-primary/[0.08] px-6 py-4 rounded-full flex justify-between items-center shadow-2xl shadow-black/20">
                 <a href="#" className="font-display font-medium text-lg text-lofi-primary hover:text-lofi-accent2 transition-colors">
-                    Adiii.
+                    Adi.
                 </a>
 
                 <div className="hidden md:flex items-center space-x-8 text-sm font-mono text-lofi-muted">
@@ -35,9 +35,9 @@ const Navbar = () => {
                     <a href="https://github.com/aditya-uii" target="_blank" rel="noreferrer" className="hover:text-lofi-primary transition-colors">
                         <Github size={18} />
                     </a>
-                    <a href="https://www.instagram.com/adityakashyap7998/" target="_blank" rel="noreferrer" className="hover:text-lofi-primary transition-colors">
+                    {/* <a href="https://www.instagram.com/adityakashyap7998/" target="_blank" rel="noreferrer" className="hover:text-lofi-primary transition-colors">
                         <Instagram size={18} />
-                    </a>
+                    </a> */}
                 </div>
             </div>
         </nav>
